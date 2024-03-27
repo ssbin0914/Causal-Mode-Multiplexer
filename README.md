@@ -17,4 +17,50 @@ We propose a novel Causal Mode Multiplexer (CMM) framework that performs unbiase
 
 ##### <sup>1</sup>R⋆T⋆ refers to the visibility (O/X) in each modality. Generally, ROTO refers to daytime images, and RXTO refers to nighttime images. ROTX refers to daytime images in obscured situations.
 
-## Code will be released soon!
+## Installation
+
+The following are the instructions on how to install dependencies.
+
+First, clone the repository locally:
+
+```bash
+git clone https://github.com/ssbin0914/Causal-Mode-Multiplexer.git
+```
+
+Create conda env using the exported file 'pytorch.yaml' and then activate it:
+
+```bash
+conda env create -f pytorch.yaml
+conda activate pytorch
+```
+
+## Training
+```bash
+CUDA_VISIBLE_DEVICES=0,1,2,3 python trainval_net.py ResNet50_lr0.007_Uncer_KL --dataset kaist --cuda --mGPUs --bs 4 --cag --s 2 --types all --net res50 --UKLoss ON
+```
+
+## Test
+```bash
+CUDA_VISIBLE_DEVICES=0 python test_net.py ResNet50_lr0.007_Uncer_KL --dataset kaist --cuda --cag --checkepoch 2 --checkpoint 3769 --checksession 2 --types all --UKLoss ON --net res50
+```
+
+## Citation
+
+If you find this work useful for your research, please consider citing our paper:
+
+```bash
+@article{kim2024causal,
+  title={Causal Mode Multiplexer: A Novel Framework for Unbiased Multispectral Pedestrian Detection},
+  author={Kim, Taeheon and Shin, Sebin and Yu, Youngjoon and Kim, Hak Gu and Ro, Yong Man},
+  journal={arXiv preprint arXiv:2403.01300},
+  year={2024}
+}
+```
+
+## Acknowledgement
+
+We thank the authors of the following research works and open-source projects.
+
+[Uncertainty-Guided Cross-Modal Learning for Robust Multispectral Pedestrian Detection](https://ieeexplore.ieee.org/abstract/document/9419080?casa_token=2iNnZoAqg20AAAAA:lAH7D-i2BnLKOY8ZnLuK_fU-M2sZBg-nlQn5sUgw9ksBPpLVkqlCdCW3EfJ50N9-AHkAHt_J)
+
+[Counterfactual VQA: A Cause-Effect Look at Language Bias](https://github.com/yuleiniu/cfvqa?tab=readme-ov-file)
