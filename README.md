@@ -46,7 +46,7 @@ CUDA_VISIBLE_DEVICES=0 python test_net.py ResNet50_lr0.007_Uncer_KL --dataset ka
 
 ## New Dataset: ROTX-MP
 
-To evaluate modality bias in multispectral pedestrian detectors, we propose a new dataset: The ROTX Multispectral Pedestrian (ROTX-MP) dataset. It mainly contains ROTX data, compared to existing datasets that consist of ROTO and RXTO data. ROTX-MP consists of 1000 ROTX test images collected from two practical scenarios (1. pedestrians over a glass window, 2. pedestrians wearing heat-insulation clothes) related to the applications of multispectral pedestrian detection.
+To evaluate modality bias in multispectral pedestrian detectors, we propose a new dataset: The ROTX Multispectral Pedestrian (ROTX-MP) dataset. It mainly contains ROTX data, compared to existing datasets that consist of ROTO and RXTO data. ROTX-MP consists of 1000 ROTX test images collected from two practical scenarios (pedestrians over a glass window, pedestrians wearing heat-insulation clothes) related to the applications of multispectral pedestrian detection.
 
 If you need the dataset, feel free to to email eetaekim@kaist.ac.kr. 
 
