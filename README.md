@@ -9,7 +9,7 @@ This repository contains code and links to the Causal Mode Multiplexer for unbia
 
 
 
-## Introduction
+## Summary
 
 ![Fig4_1](https://github.com/ssbin0914/Causal-Mode-Multiplexer/assets/101541087/7b90c4a0-ed92-464b-9bfb-9febe8f2d337)
 
