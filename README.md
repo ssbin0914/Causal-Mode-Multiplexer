@@ -65,7 +65,7 @@ If you find this work useful for your research, please consider citing our paper
 
 ## Acknowledgement
 
-We thank the authors of the following research works and open-source projects.
+We thank the authors of the following research works and open-source projects. We've used some of the code from different repositories.
 
 [Uncertainty-Guided Cross-Modal Learning for Robust Multispectral Pedestrian Detection](https://ieeexplore.ieee.org/abstract/document/9419080?casa_token=2iNnZoAqg20AAAAA:lAH7D-i2BnLKOY8ZnLuK_fU-M2sZBg-nlQn5sUgw9ksBPpLVkqlCdCW3EfJ50N9-AHkAHt_J)
 
