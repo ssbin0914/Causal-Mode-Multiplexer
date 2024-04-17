@@ -61,7 +61,7 @@ If you need the ROTX-MP dataset, feel free to email eetaekim@kaist.ac.kr.
 
 If you find this work useful for your research, please consider citing our paper:
 
-```bash
+```bibtex
 @article{kim2024causal,
   title={Causal Mode Multiplexer: A Novel Framework for Unbiased Multispectral Pedestrian Detection},
   author={Kim, Taeheon and Shin, Sebin and Yu, Youngjoon and Kim, Hak Gu and Ro, Yong Man},
