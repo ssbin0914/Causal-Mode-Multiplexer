@@ -18,7 +18,7 @@ This repository contains code and links to the Causal Mode Multiplexer for unbia
 
 - **2024.04.17** Code released. (Update in progress)
 - **2024.03.02** [**arXiv**](https://arxiv.org/abs/2403.01300) preprint released. 
-- **2024.02.27** Causal Mode Multiplexer has been accepted to CVPR 2024.
+- **2024.02.27** The paper of Causal Mode Multiplexer has been accepted to CVPR 2024.
 
 ## 📝Summary
 
