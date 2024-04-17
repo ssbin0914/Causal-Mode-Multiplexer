@@ -32,7 +32,7 @@ We propose a novel Causal Mode Multiplexer (CMM) framework that performs unbiase
 
 The following are the instructions on how to install dependencies.
 
-First, clone the repository locally:
+Clone the repository locally:
 
 ```bash
 git clone https://github.com/ssbin0914/Causal-Mode-Multiplexer.git
