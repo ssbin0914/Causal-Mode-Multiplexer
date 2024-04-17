@@ -9,7 +9,7 @@ from torch.autograd import Variable
 import numpy as np
 import scipy.sparse as sp
 import torchvision.utils as vutils
-from model.utils.config import cfg  # rm 'lib.', or cfg will be create a new copy
+from model.utils.config import cfg
 from model.rpn.rpn_fpn import _RPN_FPN
 from model.roi_pooling.modules.roi_pool import _RoIPooling
 from model.roi_crop.modules.roi_crop import _RoICrop
@@ -18,117 +18,85 @@ from model.rpn.proposal_target_layer import _ProposalTargetLayer
 from model.utils.net_utils import _smooth_l1_loss, _smooth_l1_loss_epi, _smooth_l1_loss_penalty, _crop_pool_layer, \
     _affine_grid_gen, _affine_theta, loc_uncertainty_loss
 from model.rpn.bbox_transform import bbox_transform_inv, clip_boxes, bbox_decode
-
 import time
 import pdb
 from pygcn.layers import GraphConvolution
 from pygcn.att_model import GAT
 
-
-##########################
 eps = 1e-12
 
+
 class GradMulConst(torch.autograd.Function):
-    """
-    This layer is used to create an adversarial loss.
-    """
     @staticmethod
     def forward(ctx, x, const):
-        ctx.const = const  # ctx.const = 0.0
-        return x.view_as(x)  # nothing happens
+        ctx.const = const
+        return x.view_as(x)
 
     @staticmethod
     def backward(ctx, grad_output):
         return grad_output * ctx.const, None
 
+
 def grad_mul_const(x, const):
     return GradMulConst.apply(x, const)
-##########################
 
-###############################################################
+
 no_cuda = False
 is_cuda = not no_cuda and torch.cuda.is_available()
+
+
 def sample_gumbel(shape, eps=1e-20):
     U = torch.rand(shape)
     if is_cuda:
         U = U.cuda()
     return -torch.log(-torch.log(U + eps) + eps)
 
+
 def gumbel_softmax_sample(logits, temperature):
     y = logits + Variable(sample_gumbel(logits.size()))
     return F.softmax(y / temperature, dim=-1)
 
-def gumbel_softmax(logits, temperature=0.1, hard=True):
-    """
-    ST-gumple-softmax
-    input: [*, n_class]
-    return: flatten --> [*, n_class] an one-hot vector
-    """
-    # y = gumbel_softmax_sample(100*logits, temperature)  # tensor([9.9965e-01, 3.5126e-04])
-    y = logits
 
+def gumbel_softmax(logits, temperature=0.1, hard=True):
+    y = logits
     if not hard:
         return y
-
-    shape = y.size()  # torch.Size([2]), shape: [1024, 2]
-    _, ind = y.max(dim=-1)  # ind.size(): 1024
-    y_hard = torch.zeros_like(y).view(-1, shape[-1])  # (1, 2), tensor([[0., 0.]])
-    y_hard.scatter_(1, ind.view(-1, 1), 1)  # tensor([[1., 0.]])
-    y_hard = y_hard.view(*shape)  # tensor([1., 0.])
-    # Set gradients w.r.t. y_hard gradients w.r.t. y
-    y_hard = (y_hard - y).detach() + y  # forward with y_hard, backward propagation with y
+    shape = y.size()
+    _, ind = y.max(dim=-1)
+    y_hard = torch.zeros_like(y).view(-1, shape[-1])
+    y_hard.scatter_(1, ind.view(-1, 1), 1)
+    y_hard = y_hard.view(*shape)
+    y_hard = (y_hard - y).detach() + y
     return y_hard
-###############################################################
+
 
 class _FPN(nn.Module):
-    """ FPN """
-
     def __init__(self, classes, class_agnostic):
         super(_FPN, self).__init__()
         self.classes = classes
         self.n_classes = len(classes)
         self.class_agnostic = class_agnostic
-        # loss
         self.RCNN_loss_cls = 0
         self.RCNN_loss_bbox = 0
-        # self.dropout = nn.Dropout(0.5)
         self.thresh = nn.Threshold(0.8, 0)
-
         self.maxpool2d = nn.MaxPool2d(1, stride=2)
-
-        # self.gc_att = GAT(nfeat=256, nhid=32, nclass=256, dropout=0.5, alpha=0.2)
-
-        # define rpn
         self.RCNN_rpn = _RPN_FPN(self.dout_base_model)
-
         self.RCNN_proposal_target = _ProposalTargetLayer(self.n_classes)
-
-        # NOTE: the original paper used pool_size = 7 for cls branch, and 14 for mask branch, to save the
-        # computation time, we first use 14 as the pool_size, and then do stride=2 pooling for cls branch.
         self.RCNN_roi_pool = _RoIPooling(cfg.POOLING_SIZE, cfg.POOLING_SIZE, 1.0 / 16.0)
         self.RCNN_roi_align = RoIAlignAvg(cfg.POOLING_SIZE, cfg.POOLING_SIZE, 1.0 / 16.0)
         self.grid_size = cfg.POOLING_SIZE * 2 if cfg.CROP_RESIZE_WITH_MAX_POOL else cfg.POOLING_SIZE
         self.RCNN_roi_crop = _RoICrop()
-
-        ##############################
         self.relu = nn.ReLU(inplace=True)
         self.constant = nn.Parameter(torch.FloatTensor([0.0]))
-        # self.constant = nn.Parameter(torch.FloatTensor([[0.0]*2 for _ in range(1024)]))
-        ##############################
 
     def _init_weights(self):
         def normal_init(m, mean, stddev, truncated=False):
-            """
-            weight initalizer: truncated normal and random normal.
-            """
-            # x is a parameter
             if truncated:
-                m.weight.data.normal_().fmod_(2).mul_(stddev).add_(mean)  # not a perfect approximation
+                m.weight.data.normal_().fmod_(2).mul_(stddev).add_(mean)
             else:
                 m.weight.data.normal_(mean, stddev)
                 m.bias.data.zero_()
 
-        # custom weights initialization called on netG and netD
         def weights_init(m, mean, stddev, truncated=False):
             classname = m.__class__.__name__
             if classname.find('Conv') != -1:
@@ -142,7 +110,7 @@ class _FPN(nn.Module):
         normal_init(self.RCNN_smooth1, 0, 0.01, cfg.TRAIN.TRUNCATED)
         normal_init(self.RCNN_smooth2, 0, 0.01, cfg.TRAIN.TRUNCATED)
         normal_init(self.RCNN_smooth3, 0, 0.01, cfg.TRAIN.TRUNCATED)
-        normal_init(self.RCNN_latlayer1, 0, 0.01, cfg.TRAIN.TRUNCATED)  # ?: only rgb?
+        normal_init(self.RCNN_latlayer1, 0, 0.01, cfg.TRAIN.TRUNCATED)
         normal_init(self.RCNN_latlayer2, 0, 0.01, cfg.TRAIN.TRUNCATED)
         normal_init(self.RCNN_latlayer3, 0, 0.01, cfg.TRAIN.TRUNCATED)
 
@@ -150,8 +118,6 @@ class _FPN(nn.Module):
         normal_init(self.RCNN_rpn.RPN_cls_score, 0, 0.01, cfg.TRAIN.TRUNCATED)
         normal_init(self.RCNN_rpn.RPN_bbox_pred, 0, 0.01, cfg.TRAIN.TRUNCATED)
         normal_init(self.RCNN_cls_score, 0, 0.1, cfg.TRAIN.TRUNCATED)
-#normal_init(self.RCNN_cls_score_1, 0, 0.1, cfg.TRAIN.TRUNCATED)
-#normal_init(self.RCNN_cls_score_2, 0, 0.1, cfg.TRAIN.TRUNCATED)
         normal_init(self.RCNN_bbox_pred, 0, 0.01, cfg.TRAIN.TRUNCATED)
         normal_init(self.RCNN_cls_score_ir_branch, 0, 0.1, cfg.TRAIN.TRUNCATED)
         normal_init(self.RCNN_bbox_pred_ir_branch, 0, 0.01, cfg.TRAIN.TRUNCATED)
@@ -164,48 +130,26 @@ class _FPN(nn.Module):
         self._init_weights()
 
     def _upsample_add(self, x, y):
-        '''Upsample and add two feature maps.
-        Args:
-          x: (Variable) top feature map to be upsampled.
-          y: (Variable) lateral feature map.
-        Returns:
-          (Variable) added feature map.
-        Note in PyTorch, when input size is odd, the upsampled feature map
-        with `F.upsample(..., scale_factor=2, mode='nearest')`
-        maybe not equal to the lateral feature map size.
-        e.g.
-        original input size: [N,_,15,15] ->
-        conv2d feature map size: [N,_,8,8] ->
-        upsampled feature map size: [N,_,16,16]
-        So we choose bilinear upsample which supports arbitrary output sizes.
-        '''
         _, _, H, W = y.size()
         return F.upsample(x, size=(H, W), mode='bilinear') + y
 
     def pairwise_distances(self, x):
-        x_norm = (x ** 2).sum(-1).unsqueeze(-1)  ## batch x 49 x 1
+        x_norm = (x ** 2).sum(-1).unsqueeze(-1)
         y = x
-        y_norm = x_norm.transpose(1, 2)  ## batch x 1 x 49
+        y_norm = x_norm.transpose(1, 2)
         asd = 2.0 * torch.bmm(x, torch.transpose(y, 1, 2))
         dist = x_norm + y_norm - 2.0 * torch.bmm(x, torch.transpose(y, 1, 2))
         return torch.clamp(dist, min=0)
 
     def _PyramidRoI_Feat(self, feat_maps, rois, im_info):
-        ''' roi pool on pyramid feature maps'''
-        # do roi pooling based on predicted rois
         img_area = im_info[0][0] * im_info[0][1]
         h = rois.data[:, 4] - rois.data[:, 2] + 1
         w = rois.data[:, 3] - rois.data[:, 1] + 1
         roi_level = torch.log(torch.sqrt(h * w) / 224.0) / np.log(2)
         roi_level = torch.floor(roi_level + 4)
 
-        # --------
-        # roi_level = torch.log(torch.sqrt(h * w) / 224.0)
-        # roi_level = torch.round(roi_level + 4)
-        # ------
         roi_level[roi_level < 2] = 2
         roi_level[roi_level > 5] = 5
-        # roi_level.fill_(5)
 
         if cfg.POOLING_MODE == 'align':
             roi_pool_feats = []
@@ -228,9 +172,7 @@ class _FPN(nn.Module):
 
         return roi_pool_feat
 
-    ########################################################
     def fusion(self, f, ir, rgb, f_fact=False, ir_fact=False, rgb_fact=False):
-
         f, ir, rgb = self.transform(f, ir, rgb, f_fact, ir_fact, rgb_fact)
 
         f = torch.sigmoid(f)
@@ -243,7 +185,6 @@ class _FPN(nn.Module):
         return z
 
     def transform(self, f, ir, rgb, f_fact=False, ir_fact=False, rgb_fact=False):
-
         if not f_fact:
             f = self.constant * torch.ones_like(f).cuda()
 
@@ -254,7 +195,6 @@ class _FPN(nn.Module):
             rgb = self.constant * torch.ones_like(rgb).cuda()
 
         return f, ir, rgb
-    ########################################################
 
     def forward(self, im_data, im_info, gt_boxes_ir, gt_boxes_rgb, num_boxes, im_data_ir, session, types='None',
                 UKLoss='ON', uncertainty='ON', hyper=5.0):
@@ -281,6 +221,7 @@ class _FPN(nn.Module):
         p2 = self._upsample_add(p3, self.RCNN_latlayer3(c2))
         p2 = self.RCNN_smooth3(p2)
         ####################################
+
         ############## IR part #############
         c1_ir = self.RCNN_layer0_ir(im_data_ir)
         c2_ir = self.RCNN_layer1_ir(c1_ir)
@@ -296,6 +237,7 @@ class _FPN(nn.Module):
         p2_ir = self._upsample_add(p3_ir, self.RCNN_latlayer3_ir(c2_ir))
         p2_ir = self.RCNN_smooth3_ir(p2_ir)
         ####################################
+
         p6_ir = self.maxpool2d(p5_ir)
         p6 = self.maxpool2d(p5)
 
@@ -304,9 +246,6 @@ class _FPN(nn.Module):
 
         mrcnn_feature_maps_rgb = [p2, p3, p4, p5]
         mrcnn_feature_maps_ir = [p2_ir, p3_ir, p4_ir, p5_ir]
-
-        ###################### 1. ROI is estimated based on the IR modal ########################
-        # rois_ir, rpn_loss_cls, rpn_loss_bbox = self.RCNN_rpn(rpn_feature_maps_ir, im_info, gt_boxes_ir, num_boxes)
 
         rois_ir_, rpn_loss_cls_ir, rpn_loss_bbox_ir = self.RCNN_rpn(rpn_feature_maps_ir, im_info, gt_boxes_ir, num_boxes)
         rois_rgb_, rpn_loss_cls_rgb, rpn_loss_bbox_rgb = self.RCNN_rpn(rpn_feature_maps_rgb, im_info, gt_boxes_rgb, num_boxes)
@@ -341,24 +280,20 @@ class _FPN(nn.Module):
             rois_ir = rois_ir.view(-1, 5)
             rois_ir = Variable(rois_ir)
 
-        ###################### 2. IR feature is pooled based on the ROIs of IR modal ########################
         roi_pool_feat_ir = self._PyramidRoI_Feat(mrcnn_feature_maps_ir, rois_ir, im_info)
         roi_pool_feat_rgb = self._PyramidRoI_Feat(mrcnn_feature_maps_rgb, rois_ir, im_info)
 
-        ######################### 3. Fusion ##########################
         roi_pool_feat = torch.cat((roi_pool_feat_ir, roi_pool_feat_rgb), 1)
         roi_pool_feat = self.RCNN_reduce(roi_pool_feat)
         pooled_feat = self._head_to_tail(roi_pool_feat)  # ( , )
 
         ### Uncertainty Calculation ###
         if UKLoss == 'ON':
-            if self.training:  # == False:
+            if self.training:
                 mean_cls_ir_epi = []
                 mean2_cls_ir_epi = []
                 mean_cls_rgb_epi = []
                 mean2_cls_rgb_epi = []
-                #                mean_cls_epi = []
-                #                mean2_cls_epi = []
 
                 iteration = 20
 
@@ -379,33 +314,16 @@ class _FPN(nn.Module):
                     mean_cls_rgb_epi.append(cls_prob_rgb_epi ** 2)
                     mean2_cls_rgb_epi.append(cls_prob_rgb_epi)
 
-                #                    roi_pool_feat_epi = F.dropout(roi_pool_feat, p=0.5, training=True)
-                #                    pooled_feat_epi = self._head_to_tail_dropout(roi_pool_feat_epi.detach())
-                #                    cls_score_epi = self.RCNN_cls_score(pooled_feat_epi.detach())
-                #                    cls_prob_epi = F.softmax(cls_score_epi.detach())
-                #
-                #                    mean_cls_epi.append(cls_prob_epi ** 2)
-                #                    mean2_cls_epi.append(cls_prob_epi)
-
                 mean1s_cls_ir_epi = torch.stack(mean_cls_ir_epi, dim=0).mean(dim=0)
                 mean2s_cls_ir_epi = torch.stack(mean2_cls_ir_epi, dim=0).mean(dim=0)
                 mean1s_cls_rgb_epi = torch.stack(mean_cls_rgb_epi, dim=0).mean(dim=0)
                 mean2s_cls_rgb_epi = torch.stack(mean2_cls_rgb_epi, dim=0).mean(dim=0)
-                #                mean1s_cls_epi = torch.stack(mean_cls_epi, dim=0).mean(dim=0)
-                #                mean2s_cls_epi = torch.stack(mean2_cls_epi, dim=0).mean(dim=0)
 
                 var_cls_ir_epi = (mean1s_cls_ir_epi - mean2s_cls_ir_epi ** 2)[:, 1].mean()
                 var_cls_rgb_epi = (mean1s_cls_rgb_epi - mean2s_cls_rgb_epi ** 2)[:, 1].mean()
-                #                var_cls_epi = (mean1s_cls_epi - mean2s_cls_epi ** 2)[:,1].mean()
 
                 var_cls_ir_epi_part = (var_cls_ir_epi) / (var_cls_ir_epi + var_cls_rgb_epi + 1e-10)
                 var_cls_rgb_epi_part = (var_cls_rgb_epi) / (var_cls_ir_epi + var_cls_rgb_epi + 1e-10)
-
-        #                var_cls_ir_epi_part_fusion = (var_cls_ir_epi) / (var_cls_ir_epi+var_cls_epi+1e-10)
-        #                var_cls_epi_part_fusion_ir = (var_cls_epi) / (var_cls_ir_epi+var_cls_epi+1e-10)
-        #
-        #                var_cls_rgb_epi_part_fusion = (var_cls_rgb_epi) / (var_cls_rgb_epi+var_cls_epi+1e-10)
-        #                var_cls_epi_part_fusion_rgb = (var_cls_epi) / (var_cls_rgb_epi+var_cls_epi+1e-10)
 
         pooled_feat_ir = self._head_to_tail_ir(roi_pool_feat_ir)
         bbox_pred_ir = self.RCNN_bbox_pred_ir(pooled_feat_ir)
@@ -438,11 +356,6 @@ class _FPN(nn.Module):
             RCNN_loss_bbox_rgb1 = _smooth_l1_loss(bbox_pred_rgb, rois_target_rgb, rois_inside_ws, rois_outside_ws)
             RCNN_loss_cls_rgb1 = F.cross_entropy(cls_score_rgb, rois_label)
 
-        #        roi_pool_feat = torch.cat((roi_pool_feat_ir, roi_pool_feat_rgb), 1)
-        #        roi_pool_feat = self.RCNN_reduce(roi_pool_feat)
-        #        pooled_feat = self._head_to_tail(roi_pool_feat)
-        #
-
         ############################# IR branch #############################
         roi_pool_feat_ir_temp = grad_mul_const(roi_pool_feat_ir, 0.0)
         pooled_feat_ir_branch = self._head_to_tail_ir_branch(roi_pool_feat_ir_temp)
@@ -461,14 +374,9 @@ class _FPN(nn.Module):
             # bounding box regression L1 loss
             RCNN_loss_bbox_ir_branch = _smooth_l1_loss(bbox_pred_ir_branch, rois_target_ir, rois_inside_ws,
                                                 rois_outside_ws)
-
-            # rpn_loss_cls = torch.unsqueeze(rpn_loss_cls, 0)
-            # rpn_loss_bbox = torch.unsqueeze(rpn_loss_bbox, 0)
-            # RCNN_loss_cls_ir_branch = torch.unsqueeze(RCNN_loss_cls_ir_branch, 0)  # (1,)
-            # RCNN_loss_bbox_ir_branch = torch.unsqueeze(RCNN_loss_bbox_ir_branch, 0)  # (1,)
             RCNN_loss_bbox_mix_ir_branch = RCNN_loss_bbox_ir_branch
             RCNN_loss_cls_mix_ir_branch = RCNN_loss_cls_ir_branch
-        #######################################################################
+        ######################################################################
 
         ############################# RGB branch #############################
         roi_pool_feat_rgb_temp = grad_mul_const(roi_pool_feat_rgb, 0.0)
@@ -488,71 +396,29 @@ class _FPN(nn.Module):
             # bounding box regression L1 loss
             RCNN_loss_bbox_rgb_branch = _smooth_l1_loss(bbox_pred_rgb_branch, rois_target_rgb, rois_inside_ws,
                                                            rois_outside_ws)
-
-            # rpn_loss_cls = torch.unsqueeze(rpn_loss_cls, 0)
-            # rpn_loss_bbox = torch.unsqueeze(rpn_loss_bbox, 0)
-            # RCNN_loss_cls_rgb_branch = torch.unsqueeze(RCNN_loss_cls_rgb_branch, 0)  # (1,)
-            # RCNN_loss_bbox_rgb_branch = torch.unsqueeze(RCNN_loss_bbox_rgb_branch, 0)  # (1,)
             RCNN_loss_bbox_mix_rgb_branch = RCNN_loss_bbox_rgb_branch
             RCNN_loss_cls_mix_rgb_branch = RCNN_loss_cls_rgb_branch
         #######################################################################
-        ########################Illumination-aware#############################
-#        illum_ir_gumbel = gumbel_softmax(cls_prob_ir_branch)
-#        illum_rgb_gumbel = gumbel_softmax(cls_prob_rgb_branch)
-#        illum_ir_prob_diff = illum_ir_gumbel[:, 1] - illum_ir_gumbel[:, 0]
-#        illum_rgb_prob_diff = illum_rgb_gumbel[:, 1] - illum_rgb_gumbel[:, 0]
-#        illum_weight = (-1) * illum_ir_prob_diff * illum_rgb_prob_diff
-#        illum_weight = self.relu(illum_weight)  # (1024,)
-#        # illum_weight = cls_prob_ir_branch[:, 1] * cls_prob_rgb_branch[:, 1]
-#        illum_weight = illum_weight.unsqueeze(1)
 
-#        cls_score_roto = self.RCNN_cls_score_1(pooled_feat)
-#        cls_score_rxto = self.RCNN_cls_score_2(pooled_feat)
-#        cls_score = (1-illum_weight)*cls_score_roto + illum_weight*cls_score_rxto
-#        bbox_pred = self.RCNN_bbox_pred(pooled_feat)
-#        cls_prob = F.softmax(cls_score)
-        #######################################################################
         bbox_pred = self.RCNN_bbox_pred(pooled_feat)
         cls_score = self.RCNN_cls_score(pooled_feat)
         cls_prob = F.softmax(cls_score)
 
-        #########################################
-        te = self.fusion(cls_score, cls_score_ir_branch, cls_score_rgb_branch, f_fact=True, ir_fact=True, rgb_fact=True)  # (1024, 2)
+        te = self.fusion(cls_score, cls_score_ir_branch, cls_score_rgb_branch, f_fact=True, ir_fact=True, rgb_fact=True)
         te_prob = F.softmax(te)
         te_prob_all = te_prob.view(batch_size, rois_ir.size(0)/batch_size, -1)
-        ############################
-        # ir_prob_diff = cls_prob_ir_branch[:, 1] - cls_prob_ir_branch[:, 0]
-        # rgb_prob_diff = cls_prob_rgb_branch[:, 1] - cls_prob_rgb_branch[:, 0]
-        # bias_detect = (-1) * ir_prob_diff * rgb_prob_diff
-        # bias_detect = self.relu(bias_detect)  # (1024,)
 
         ir_gumbel = gumbel_softmax(cls_prob_ir_branch)
         rgb_gumbel = gumbel_softmax(cls_prob_rgb_branch)
         ir_prob_diff = ir_gumbel[:, 1] - ir_gumbel[:, 0]
         rgb_prob_diff = rgb_gumbel[:, 1] - rgb_gumbel[:, 0]
         bias_detect = (-1) * ir_prob_diff * rgb_prob_diff
-        bias_detect = self.relu(bias_detect)  # (1024,)
+        bias_detect = self.relu(bias_detect)
 
         nde = self.fusion(cls_score, cls_score_ir_branch, cls_score_rgb_branch, f_fact=False, ir_fact=True, rgb_fact=False)
         tie = te - bias_detect.unsqueeze(1) * nde
-        # tie = te - nde
         tie_prob = F.softmax(tie)
         tie_prob_all = tie_prob.view(batch_size, rois_ir.size(0)/batch_size, -1)
-        ############################
-
-        # nde_c = self.fusion(cls_score.clone().detach(), cls_score_ir_branch.clone().detach(), cls_score_rgb_branch.clone().detach(), f_fact=False, ir_fact=True, rgb_fact=False)  # (1024, 2)
-        # p_te = F.softmax(te).clone().detach()  # (1024, 2)
-        # p_nde = F.softmax(nde_c)  # (1024, 2)
-        # kl_loss_c = - p_te * p_nde.log()  # (1024, 2)
-        # # kl_loss_c = (1-bias_detect).unsqueeze(1) * kl_loss_c
-        # kl_loss_c = kl_loss_c.sum(1).mean()  # scalar
-
-        # if not self.training:
-        #     nde = self.fusion(cls_score, cls_score_ir_branch, cls_score_rgb_branch, f_fact=False, ir_fact=True, rgb_fact=False)
-        #     tie = te - nde
-        #     tie_prob = F.softmax(tie)
-        #     tie_prob_all = tie_prob.view(batch_size, rois_ir.size(0)/batch_size, -1)
-        #########################################
 
         if UKLoss == 'ON':
             distance_matrix_rgb = torch.mm(pooled_feat_rgb, pooled_feat_rgb.transpose(0, 1))
@@ -561,10 +427,6 @@ class _FPN(nn.Module):
             distance_matrix_ir = torch.mm(pooled_feat_ir, pooled_feat_ir.transpose(0, 1))
             distance_matrix_ir = F.normalize(distance_matrix_ir.view(1, -1), dim=-1, p=1)
 
-        #            distance_matrix_fus = torch.mm(pooled_feat, pooled_feat.transpose(0,1))
-        #            distance_matrix_fus = F.normalize(distance_matrix_fus.view(1, -1), dim=-1, p=1)
-
-        # types = 'none'
         if self.training and not types == 'none':
             if types == 'rgb':
                 kl_loss = 5.0 * torch.sum(distance_matrix_rgb.detach() * torch.log(
@@ -580,16 +442,7 @@ class _FPN(nn.Module):
                         distance_matrix_rgb * torch.log((distance_matrix_rgb + 1e-10) / (distance_matrix_ir + 1e-10)))
                     kl_loss2 = 5.0 * var_cls_rgb_epi_part.detach() * torch.sum(
                         distance_matrix_ir * torch.log((distance_matrix_ir + 1e-10) / (distance_matrix_rgb + 1e-10)))
-
-                    #                    kl_loss3 = 10.0 * var_cls_ir_epi_part_fusion.detach() * torch.sum(distance_matrix_fus * torch.log((distance_matrix_fus+1e-10) / (distance_matrix_ir + 1e-10)))
-                    #                    kl_loss4 = 10.0 * var_cls_epi_part_fusion_ir.detach() * torch.sum(distance_matrix_ir * torch.log((distance_matrix_ir+1e-10) / (distance_matrix_fus + 1e-10)))
-                    #
-                    #                    kl_loss5 = 10.0 * var_cls_rgb_epi_part_fusion.detach() * torch.sum(distance_matrix_fus * torch.log((distance_matrix_fus+1e-10) / (distance_matrix_rgb + 1e-10)))
-                    #                    kl_loss6 = 10.0 * var_cls_epi_part_fusion_rgb.detach() * torch.sum(distance_matrix_rgb * torch.log((distance_matrix_rgb+1e-10) / (distance_matrix_fus + 1e-10)))
-                    #
                     kl_loss = kl_loss1 + kl_loss2
-                #
-                #                        kl_loss = kl_loss1 + kl_loss2 + kl_loss3 + kl_loss4 + kl_loss5 + kl_loss6
                 elif uncertainty == 'OFF':
                     kl_loss1 = hyper * torch.sum(
                         distance_matrix_rgb * torch.log((distance_matrix_rgb + 1e-10) / (distance_matrix_ir + 1e-10)))
@@ -599,12 +452,10 @@ class _FPN(nn.Module):
                 else:
                     print("Wrong type of args.uncertainty")
                     assert 1 == 0
-
             else:
                 print(types)
                 assert 1 == 0
 
-        #        print(kl_loss)
         RCNN_loss_cls = 0
         RCNN_loss_bbox = 0
         if self.training:
@@ -620,7 +471,6 @@ class _FPN(nn.Module):
 
         RCNN_loss_bbox_tot = RCNN_loss_bbox_ir_branch + RCNN_loss_bbox + RCNN_loss_bbox_rgb_branch
         RCNN_loss_cls_tot = RCNN_loss_cls_ir_branch + RCNN_loss_cls + RCNN_loss_cls_rgb_branch
-        # RCNN_loss_cls_tot = RCNN_loss_cls_ir_branch + RCNN_loss_cls + RCNN_loss_cls_rgb_branch + kl_loss_c
 
         RCNN_loss_bbox_mix_tot = RCNN_loss_bbox_mix_ir_branch + RCNN_loss_bbox_mix + RCNN_loss_bbox_mix_rgb_branch
         RCNN_loss_cls_mix_tot = RCNN_loss_cls_mix_ir_branch + RCNN_loss_cls_mix + RCNN_loss_cls_mix_rgb_branch
@@ -639,7 +489,4 @@ class _FPN(nn.Module):
                 print("Wrong type for UK Loss")
                 assert 1 == 0
         else:
-            return rois_ir, tie_prob_all, bbox_pred, roi_pool_feat_rgb, roi_pool_feat_rgb, pooled_feat_rgb, pooled_feat_ir#, tie, te, nde  # var_cls_ir_epi_part, var_cls_rgb_epi_part
-
-
-
+            return rois_ir, tie_prob_all, bbox_pred, roi_pool_feat_rgb, roi_pool_feat_rgb, pooled_feat_rgb, pooled_feat_ir

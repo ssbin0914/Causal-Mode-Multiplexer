@@ -1,12 +1,8 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
 from model.utils.config import cfg
 from model.fpn.fpn_ma_w_rgb_branch import _FPN
-# from model.fpn.fpn import _FPN
-#from model.fpn.fpn_hist import _FPN
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -18,7 +14,6 @@ import pdb
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
        'resnet152']
 
-
 model_urls = {
   'resnet18': 'https://s3.amazonaws.com/pytorch/models/resnet18-5c106cde.pth',
   'resnet34': 'https://s3.amazonaws.com/pytorch/models/resnet34-333f7ec4.pth',
@@ -26,6 +21,7 @@ model_urls = {
   'resnet101': 'https://s3.amazonaws.com/pytorch/models/resnet101-5d3b4d8f.pth',
   'resnet152': 'https://s3.amazonaws.com/pytorch/models/resnet152-b121ed2d.pth',
 }
+
 
 def conv3x3(in_planes, out_planes, stride=1):
   "3x3 convolution with padding"
@@ -254,14 +250,6 @@ class resnet(_FPN):
     self.RCNN_layer3_ir = nn.Sequential(resnet.layer3)
     self.RCNN_layer4_ir = nn.Sequential(resnet.layer4)
 
-#    self.RCNN_reduce_p2 = nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0)
-#    self.RCNN_reduce_p3 = nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0)
-#    self.RCNN_reduce_p4 = nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0)
-#    self.RCNN_reduce_p5 = nn.Conv2d(256, 256, kernel_size=1, stride=1, padding=0)
-
-#    self.RCNN_reduce_last = nn.Conv2d(512, 256, kernel_size=1, stride=1, padding=0)
-
-#    self.reduce_graph = nn.Conv2d(512, 256, kernel_size=1, stride=1, padding=0)
     # Top layer
     self.RCNN_toplayer = nn.Conv2d(2048, 256, kernel_size=1, stride=1, padding=0)  # reduce channel
     self.RCNN_toplayer_ir = nn.Conv2d(2048, 256, kernel_size=1, stride=1, padding=0)  # reduce channel
@@ -285,7 +273,6 @@ class resnet(_FPN):
     self.RCNN_latlayer2_ir = nn.Conv2d( 512, 256, kernel_size=1, stride=1, padding=0)
     self.RCNN_latlayer3_ir = nn.Conv2d( 256, 256, kernel_size=1, stride=1, padding=0)
 
-
     # ROI Pool feature downsampling
     self.RCNN_reduce = nn.Conv2d(512, 256, kernel_size=1, stride=1, padding=0)
 
@@ -307,8 +294,6 @@ class resnet(_FPN):
       nn.Conv2d(1024, 1024, kernel_size=1, stride=1, padding=0),
       nn.ReLU(True),
     )
-
-    ###################################################################
     self.RCNN_top_rgb_branch = nn.Sequential(
       nn.Conv2d(256, 1024, kernel_size=cfg.POOLING_SIZE, stride=cfg.POOLING_SIZE, padding=0),
       nn.ReLU(True),
@@ -321,32 +306,19 @@ class resnet(_FPN):
       nn.Conv2d(1024, 1024, kernel_size=1, stride=1, padding=0),
       nn.ReLU(True),
     )
-    ###################################################################
 
     self.RCNN_cls_score = nn.Linear(1024, self.n_classes)
-
     self.RCNN_cls_score_ir = nn.Linear(1024, self.n_classes)
     self.RCNN_cls_score_rgb = nn.Linear(1024, self.n_classes)
-
-    ###################################################################
     self.RCNN_cls_score_ir_branch = nn.Linear(1024, self.n_classes)
     self.RCNN_cls_score_rgb_branch = nn.Linear(1024, self.n_classes)
-    ###################################################################
-
-    ###################illumination-aware##############################
-#self.RCNN_cls_score_1 = nn.Linear(1024, self.n_classes)
-#self.RCNN_cls_score_2 = nn.Linear(1024, self.n_classes)
-    ###################################################################
 
     if self.class_agnostic:
       self.RCNN_bbox_pred = nn.Linear(1024, 4)
       self.RCNN_bbox_pred_rgb = nn.Linear(1024, 4)
       self.RCNN_bbox_pred_ir = nn.Linear(1024, 4)
-      ####################################################
       self.RCNN_bbox_pred_rgb_branch = nn.Linear(1024, 4)
       self.RCNN_bbox_pred_ir_branch = nn.Linear(1024, 4)
-      ####################################################
-
     else:
       self.RCNN_bbox_pred = nn.Linear(1024, 4 * self.n_classes)
 
@@ -378,7 +350,6 @@ class resnet(_FPN):
     self.RCNN_layer2_ir.apply(set_bn_fix)
     self.RCNN_layer3_ir.apply(set_bn_fix)
     self.RCNN_layer4_ir.apply(set_bn_fix)
-
 
   def train(self, mode=True):
     # Override train so that the training mode is set as we want
@@ -417,7 +388,6 @@ class resnet(_FPN):
 
       self.RCNN_toplayer_ir.train()
 
-
       def set_bn_eval(m):
         classname = m.__class__.__name__
         if classname.find('BatchNorm') != -1:
@@ -435,14 +405,12 @@ class resnet(_FPN):
       self.RCNN_layer3_ir.apply(set_bn_eval)
       self.RCNN_layer4_ir.apply(set_bn_eval)
 
-
   def _head_to_tail_dropout(self, pool5):
     block5 = self.RCNN_top[0](pool5)
     block5 = self.RCNN_top[1](block5)
     block5 = F.dropout(block5, p=0.5, training=True)
     block5 = self.RCNN_top[2](block5)
     block5 = self.RCNN_top[3](block5)
-    #block5 = F.dropout(block5, p=0.5, training=True)
 
     fc7 = block5.mean(3).mean(2)
     return fc7
@@ -466,7 +434,6 @@ class resnet(_FPN):
     fc7 = block5.mean(3).mean(2)
     return fc7
 
-###########################################
   def _head_to_tail_rgb_branch(self, pool5):
     block5 = self.RCNN_top_rgb_branch(pool5)
     fc7 = block5.mean(3).mean(2)
@@ -476,7 +443,6 @@ class resnet(_FPN):
     block5 = self.RCNN_top_ir_branch(pool5)
     fc7 = block5.mean(3).mean(2)
     return fc7
-###########################################
 
   def _head_to_tail_ir_dropout(self, pool5):
     block5 = self.RCNN_top_ir[0](pool5)
@@ -507,4 +473,3 @@ class resnet(_FPN):
 
     fc7 = block5.mean(3).mean(2)
     return fc7
-
