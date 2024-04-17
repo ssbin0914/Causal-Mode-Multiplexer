@@ -16,7 +16,7 @@ This repository contains code and links to the Causal Mode Multiplexer for unbia
 
 
 
-## Summary
+## 📝 Summary
 
 ![Fig4_1](https://github.com/ssbin0914/Causal-Mode-Multiplexer/assets/101541087/7b90c4a0-ed92-464b-9bfb-9febe8f2d337)
 
@@ -51,13 +51,13 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python trainval_net.py ResNet50_lr0.007_Uncer_KL --
 CUDA_VISIBLE_DEVICES=0 python test_net.py ResNet50_lr0.007_Uncer_KL --dataset kaist --cuda --cag --checkepoch 2 --checkpoint 3769 --checksession 2 --types all --UKLoss ON --net res50
 ```
 
-## New Dataset: ROTX-MP
+## 🔮 New Dataset: ROTX-MP
 
 To evaluate modality bias in multispectral pedestrian detectors, we propose a new dataset: ROTX Multispectral Pedestrian (ROTX-MP) dataset. It mainly contains ROTX data, compared to existing datasets that consist of ROTO and RXTO data. ROTX-MP consists of 1000 ROTX test images collected from two practical scenarios (pedestrians over a glass window, pedestrians wearing heat-insulation clothes) related to the applications of multispectral pedestrian detection.
 
 If you need the ROTX-MP dataset, feel free to email eetaekim@kaist.ac.kr. 
 
-## Citation
+## 📃 Citation
 
 If you find this work useful for your research, please consider citing our paper:
 
@@ -70,7 +70,7 @@ If you find this work useful for your research, please consider citing our paper
 }
 ```
 
-## Acknowledgement
+## 🙏 Acknowledgement
 
 We thank the authors of the following research works and open-source projects. We've used some of the code from different repositories.
 
