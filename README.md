@@ -38,7 +38,7 @@ Clone the repository locally:
 git clone https://github.com/ssbin0914/Causal-Mode-Multiplexer.git
 ```
 
-Create conda env using the exported file 'pytorch.yaml' and then activate it:
+Create conda env using the exported file `pytorch.yaml` and then activate it:
 
 ```bash
 conda env create -f pytorch.yaml
