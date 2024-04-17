@@ -28,7 +28,7 @@ We propose a novel Causal Mode Multiplexer (CMM) framework that performs unbiase
 
 ##### <sup>1</sup>R⋆T⋆ refers to the visibility (O/X) in each modality. Generally, ROTO refers to daytime images, and RXTO refers to nighttime images. ROTX refers to daytime images in obscured situations.
 
-## Installation
+## 🔧Installation
 
 The following are the instructions on how to install dependencies.
 
@@ -45,12 +45,12 @@ conda env create -f pytorch.yaml
 conda activate pytorch
 ```
 
-## Training
+## 🔨Training
 ```bash
 CUDA_VISIBLE_DEVICES=0,1,2,3 python trainval_net.py ResNet50_lr0.007_Uncer_KL --dataset kaist --cuda --mGPUs --bs 4 --cag --s 2 --types all --net res50 --UKLoss ON --lr 0.007 --lr_decay_step 1 --epochs 2
 ```
 
-## Test
+## 🧪Test
 ```bash
 CUDA_VISIBLE_DEVICES=0 python test_net.py ResNet50_lr0.007_Uncer_KL --dataset kaist --cuda --cag --checkepoch 2 --checkpoint 1381 --checksession 2 --types all --UKLoss ON --net res50 --vis
 ```
