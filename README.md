@@ -47,12 +47,12 @@ conda activate pytorch
 
 ## Training
 ```bash
-CUDA_VISIBLE_DEVICES=0,1,2,3 python trainval_net.py ResNet50_lr0.007_Uncer_KL --dataset kaist --cuda --mGPUs --bs 4 --cag --s 2 --types all --net res50 --UKLoss ON
+CUDA_VISIBLE_DEVICES=0,1,2,3 python trainval_net.py ResNet50_lr0.007_Uncer_KL --dataset kaist --cuda --mGPUs --bs 4 --cag --s 2 --types all --net res50 --UKLoss ON --lr 0.007 --lr_decay_step 1 --epochs 2
 ```
 
 ## Test
 ```bash
-CUDA_VISIBLE_DEVICES=0 python test_net.py ResNet50_lr0.007_Uncer_KL --dataset kaist --cuda --cag --checkepoch 2 --checkpoint 3769 --checksession 2 --types all --UKLoss ON --net res50
+CUDA_VISIBLE_DEVICES=0 python test_net.py ResNet50_lr0.007_Uncer_KL --dataset kaist --cuda --cag --checkepoch 2 --checkpoint 1381 --checksession 2 --types all --UKLoss ON --net res50 --vis
 ```
 
 ## ✨New Dataset: ROTX-MP
