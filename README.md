@@ -32,13 +32,13 @@ We propose a novel Causal Mode Multiplexer (CMM) framework that performs unbiase
 
 The following are the instructions on how to install dependencies.
 
-Clone the repository locally:
+First, clone the repository locally:
 
 ```bash
 git clone https://github.com/ssbin0914/Causal-Mode-Multiplexer.git
 ```
 
-Create conda env using the exported file `pytorch.yaml` and then activate it:
+After that, create conda env using the exported file `pytorch.yaml` and then activate it:
 
 ```bash
 conda env create -f pytorch.yaml
