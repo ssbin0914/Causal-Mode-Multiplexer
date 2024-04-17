@@ -1,7 +1,14 @@
 # Causal Mode Multiplexer
 [CVPR 2024] Causal Mode Multiplexer: A Novel Framework for Unbiased Multispectral Pedestrian Detection
 
-[Taeheon Kim*](https://scholar.google.com/citations?user=9nYafYMAAAAJ&hl=en), [Sebin Shin*](https://scholar.google.com/citations?user=a-wpcQEAAAAJ&hl=en), [Youngjoon Yu](https://dblp.org/pid/266/1289.html), [Hak Gu Kim](https://scholar.google.com/citations?user=Jgh1JYgAAAAJ&hl=en), and [Yong Man Ro](https://scholar.google.com/citations?user=IPzfF7cAAAAJ&hl=en) (*: equally contributed)
+<p>
+  <a href="https://scholar.google.com/citations?user=9nYafYMAAAAJ&hl=en">Taeheon Kim</a><sup>*</sup>, 
+  <a href="https://scholar.google.com/citations?user=a-wpcQEAAAAJ&hl=en">Sebin Shin</a><sup>*</sup>, 
+  <a href="https://dblp.org/pid/266/1289.html">Youngjoon Yu</a>, 
+  <a href="https://scholar.google.com/citations?user=Jgh1JYgAAAAJ&hl=en">Hak Gu Kim</a>, 
+  and <a href="https://scholar.google.com/citations?user=IPzfF7cAAAAJ&hl=en">Yong Man Ro</a> 
+  ( * : equally contributed)
+</p>
 
 <a href='https://arxiv.org/abs/2403.01300'><img src='https://img.shields.io/badge/Paper-Arxiv-red'></a>
 
