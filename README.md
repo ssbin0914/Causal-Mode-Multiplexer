@@ -16,7 +16,7 @@ This repository contains code and links to the Causal Mode Multiplexer for unbia
 
 ## 📢News
 
-- **2024.04.17** Code released.
+- **2024.04.17** Code released. (Update in progress)
 - **2024.03.02** [**arXiv**](https://arxiv.org/abs/2403.01300) preprint released. 
 - **2024.02.27** Causal Mode Multiplexer has been accepted to CVPR 2024.
 
@@ -81,5 +81,3 @@ We thank the authors of the following research works and open-source projects. W
 [Uncertainty-Guided Cross-Modal Learning for Robust Multispectral Pedestrian Detection](https://ieeexplore.ieee.org/abstract/document/9419080?casa_token=2iNnZoAqg20AAAAA:lAH7D-i2BnLKOY8ZnLuK_fU-M2sZBg-nlQn5sUgw9ksBPpLVkqlCdCW3EfJ50N9-AHkAHt_J)
 
 [Counterfactual VQA: A Cause-Effect Look at Language Bias](https://github.com/yuleiniu/cfvqa?tab=readme-ov-file)
-
-## Update in progress~
