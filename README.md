@@ -14,7 +14,11 @@
 
 This repository contains code and links to the Causal Mode Multiplexer for unbiased multispectral pedestrian detection. We show that the Causal Mode Multiplexer framework effectively learns the causal relationships between multispectral inputs and predictions, thereby showing strong generalization ability on out-of-distribution data.
 
+## 📢 News
 
+- **2024.04.17** Code released.
+- **2024.03.02** [**arXiv**](https://arxiv.org/abs/2403.01300) preprint released. 
+- **2024.02.27** Causal Mode Multiplexer has been accepted to CVPR 2024.
 
 ## 📝 Summary
 
