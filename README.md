@@ -109,7 +109,9 @@ CUDA_VISIBLE_DEVICES=0 python test_net.py ResNet50_lr0.007_Uncer_KL --dataset ka
 
 To evaluate modality bias in multispectral pedestrian detectors, we propose a new dataset: ROTX Multispectral Pedestrian (ROTX-MP) dataset. It mainly contains ROTX data, compared to existing datasets that consist of ROTO and RXTO data. ROTX-MP consists of 1000 ROTX test images collected from two practical scenarios (pedestrians over a glass window, pedestrians wearing heat-insulation clothes) related to the applications of multispectral pedestrian detection.
 
-If you need the ROTX-MP dataset, feel free to email eetaekim@kaist.ac.kr. 
+If you need the ROTX-MP dataset, feel free to email eetaekim@kaist.ac.kr.
+
+To evaluate performance on the ROTX-MP dataset, first place the ground truth annotations in the `lwir` and `visible` folders within the `data/KAIST_PED/Annotations` directory. Then, put the images from the ROTX-MP dataset into the `lwir` and `visible` folders located in the `data/KAIST_PED/JPEG_Images` directory. Afterwards, replace the `test.txt` file in the `data/KAIST_PED/ImageSets/Main` folder with the ROTX-MP `test.txt` file. Note that the original `test.txt` file is from the FLIR dataset. Lastly, delete the files located in the `data/cache` directory if you evaluate on the ROTX-MP dataset after evaluating the FLIR dataset. It is crucial to remove these files when switching between datasets for training and evaluation. This is also the case when you want to evaluate on the FLIR dataset after evaluating the ROTX-MP dataset.
 
 ## 📃Citation
 
