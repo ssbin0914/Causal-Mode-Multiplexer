@@ -45,7 +45,7 @@ conda env create -f pytorch.yaml
 conda activate pytorch
 ```
 
-Step 3. Download the `data` folder from [link](). We provide the FLIR dataset.
+Step 3. Download the `data` folder from [link](https://drive.google.com/drive/folders/1GM2hyK2rDq_GSSRRvAgFo4rVu-iVoBCa?usp=sharing). We provide the FLIR dataset.
 
 ```
 └── Causal-Mode-Multiplexer
