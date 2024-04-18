@@ -28,22 +28,24 @@ We propose a novel Causal Mode Multiplexer (CMM) framework that performs unbiase
 
 ##### <sup>1</sup>R⋆T⋆ refers to the visibility (O/X) in each modality. Generally, ROTO refers to daytime images, and RXTO refers to nighttime images. ROTX refers to daytime images in obscured situations.
 
-## 🔧Installation
+## 🔧Installation & Data Preparation
 
 The following are the instructions on how to install dependencies.
 
-First, clone the repository locally:
+Step 1. Clone the repository locally:
 
 ```bash
 git clone https://github.com/ssbin0914/Causal-Mode-Multiplexer.git
 ```
 
-After that, create conda env using the exported file `pytorch.yaml` and then activate it:
+Step 2. Create conda env using the exported file `pytorch.yaml` and then activate it:
 
 ```bash
 conda env create -f pytorch.yaml
 conda activate pytorch
 ```
+
+Step 3. Download the `data` folder from [link](). We provide the FLIR dataset. 
 
 ## 🔨Training
 ```bash
