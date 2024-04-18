@@ -117,6 +117,8 @@ CUDA_VISIBLE_DEVICES=0 python test_net.py ResNet50_lr0.007_Uncer_KL --dataset ka
 
 where `ResNet50_lr0.007_Uncer_KL` is the name of the folder containing the weights you want to test. Set `--checksession`, `--checkepoch`, and `--checkpoint` according to the name of your weight file, e.g., `fpn_2_2_1381.pth`.
 
+After running the code, the detection results are stored in `Detection_Result/` directory. These results are used for evaluation purposes. Visualization results are also stored as RGB images in the `images` folder and as infrared (IR) images in the `images_ir` folder.
+
 ## ✨New Dataset: ROTX-MP
 
 To evaluate modality bias in multispectral pedestrian detectors, we propose a new dataset: ROTX Multispectral Pedestrian (ROTX-MP) dataset. It mainly contains ROTX data, compared to existing datasets that consist of ROTO and RXTO data. ROTX-MP consists of 1000 ROTX test images collected from two practical scenarios (pedestrians over a glass window, pedestrians wearing heat-insulation clothes) related to the applications of multispectral pedestrian detection.
