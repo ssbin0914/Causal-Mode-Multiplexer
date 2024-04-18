@@ -125,7 +125,11 @@ To evaluate modality bias in multispectral pedestrian detectors, we propose a ne
 
 If you need the ROTX-MP dataset, feel free to email eetaekim@kaist.ac.kr.
 
-To evaluate performance on the ROTX-MP dataset, first place the ground truth annotations in the `lwir` and `visible` folders within the `data/KAIST_PED/Annotations` directory. Then, put the images from the ROTX-MP dataset into the `lwir` and `visible` folders located in the `data/KAIST_PED/JPEG_Images` directory. Afterwards, replace the `test.txt` file in the `data/KAIST_PED/ImageSets/Main` folder with the ROTX-MP `test.txt` file. Note that the original `test.txt` file is from the FLIR dataset. Lastly, delete the files located in the `data/cache` directory if you evaluate on the ROTX-MP dataset after evaluating the FLIR dataset. It is crucial to remove these files when switching between datasets for training and evaluation. This is also the case when you want to evaluate on the FLIR dataset after evaluating the ROTX-MP dataset.
+To evaluate performance on the ROTX-MP dataset:<br>
+Step 1. Place the ground truth annotations in the `lwir` and `visible` folders within the `data/KAIST_PED/Annotations` directory.<br>
+Step 2. Put the images from the ROTX-MP dataset into the `lwir` and `visible` folders located in the `data/KAIST_PED/JPEG_Images` directory.<br>
+Step 3. Replace the `test.txt` file in the `data/KAIST_PED/ImageSets/Main` folder with the ROTX-MP `test.txt` file. Note that the original `test.txt` file is from the FLIR dataset.<br>
+Step 4. Delete the files located in the `data/cache` directory if you evaluate on the ROTX-MP dataset after evaluating the FLIR dataset. It is crucial to remove these files when switching between datasets for training and evaluation. This is also the case when you want to evaluate on the FLIR dataset after evaluating the ROTX-MP dataset.
 
 ## 📃Citation
 
