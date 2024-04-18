@@ -45,7 +45,55 @@ conda env create -f pytorch.yaml
 conda activate pytorch
 ```
 
-Step 3. Download the `data` folder from [link](). We provide the FLIR dataset. 
+Step 3. Download the `data` folder from [link](). We provide the FLIR dataset.
+
+```
+└── Causal-Mode-Multiplexer
+               ├── cfgs
+               ├── lib
+               ├── data
+               │    ├── cache
+               │    ├── KAIST_PED
+               │    │       └── Annotations
+               │    │       │        ├── lwir
+               │    │       │        │     ├── FLIR_08864.txt
+               │    │       │        │     └── ...
+               │    │       │        └── visible
+               │    │       │              ├── FLIR_08864.txt
+               │    │       │              └── ...
+               │    │       ├── annotations_cache
+               │    │       ├── ImageSets
+               │    │       │        ├── Main 
+               │    │       │        │     ├── train.txt
+               │    │       │        │     └── test.txt
+               │    │       │        └── Main_Org
+               │    │       ├── JPEGImages
+               │    │       │        ├── lwir
+               │    │       │        │     ├── FLIR_08864.jpg
+               │    │       │        │     └── ...
+               │    │       │        └── visible
+               │    │       │              ├── FLIR_08864.jpg
+               │    │       │              └── ...
+               │    │       └── results
+               │    └── pretrained_model
+               │            ├── resnet50.pth
+               │            ├── resnet101.pth
+               │            └── ...
+               │
+               │
+               ├── Detection_Result
+               ├── export
+               ├── images
+               ├── images_ir
+               ├── output
+               │    └── res50
+               │            └── kaist_test
+               │                     └── faster_rcnn_10
+               ├── weights
+               │    └── res50
+               │            └── kaist
+               └── ...
+```
 
 ## 🔨Training
 ```bash
