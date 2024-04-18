@@ -96,14 +96,26 @@ Step 3. Download the `data` folder from [link](https://drive.google.com/drive/fo
 ```
 
 ## 🔨Training
+
+To train the CMM, simply run:
+
 ```bash
 CUDA_VISIBLE_DEVICES=0,1,2,3 python trainval_net.py ResNet50_lr0.007_Uncer_KL --dataset kaist --cuda --mGPUs --bs 4 --cag --s 2 --types all --net res50 --UKLoss ON --lr 0.007 --lr_decay_step 1 --epochs 2
 ```
 
+where `ResNet50_lr0.007_Uncer_KL` is the name of the folder where the weights will be stored. `--lr` specifies the learning rate, `--lr_decay_step` indicates the step at which the learning rate decays, and `--epochs` refers to the number of training epochs.
+
+After running the code, the weights are stored in `weights/res50/kaist/ResNEt50_lr0.007_Uncer_KL`. 
+
 ## 🧪Test
+
+To test the CMM, simply run:
+
 ```bash
-CUDA_VISIBLE_DEVICES=0 python test_net.py ResNet50_lr0.007_Uncer_KL --dataset kaist --cuda --cag --checkepoch 2 --checkpoint 1381 --checksession 2 --types all --UKLoss ON --net res50 --vis
+CUDA_VISIBLE_DEVICES=0 python test_net.py ResNet50_lr0.007_Uncer_KL --dataset kaist --cuda --cag --checksession 2 --checkepoch 2 --checkpoint 1381 --types all --UKLoss ON --net res50 --vis
 ```
+
+where `ResNet50_lr0.007_Uncer_KL` is the name of the folder containing the weights you want to test. Set `--checksession`, `--checkepoch`, and `--checkpoint` according to the name of your weight file, e.g., `fpn_2_2_1381.pth`.
 
 ## ✨New Dataset: ROTX-MP
 
