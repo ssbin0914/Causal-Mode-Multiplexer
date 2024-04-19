@@ -48,6 +48,8 @@ pip install -r requirements.txt
 wget https://download.pytorch.org/whl/cu90/torch-0.3.1-cp27-cp27mu-linux_x86_64.whl
 pip install torch-0.3.1-cp27-cp27mu-linux_x86_64.whl
 pip install torchvision==0.1.8
+cd lib
+sh make.sh
 ```
 
 Step 3. Download the `data` folder from [link](https://drive.google.com/file/d/1wgZtVGwJW-02XKSonyz_nKKwoNlu86vm/view?usp=sharing). We provide the FLIR dataset.
