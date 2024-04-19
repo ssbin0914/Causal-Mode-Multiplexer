@@ -103,7 +103,7 @@ where `ResNet50_lr0.007_Uncer_KL` is the name of the folder where the weights wi
 
 After running the code, the weights are stored in `weights/res50/kaist/ResNet50_lr0.007_Uncer_KL`.
 
-* Pretrained weights for the FLIR dataset are available from this [link](https://drive.google.com/file/d/1-zwQI536o65FEfzoaQFU7hLurW1z4bWt/view?usp=sharing).
+* The pretrained weight for the FLIR dataset are available from this [link](https://drive.google.com/file/d/1-zwQI536o65FEfzoaQFU7hLurW1z4bWt/view?usp=sharing).
 
 ## 🧪Test
 
