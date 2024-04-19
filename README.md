@@ -30,8 +30,6 @@ We propose a novel Causal Mode Multiplexer (CMM) framework that performs unbiase
 
 ## 🔧Installation & Data Preparation
 
-The following are the instructions on how to install dependencies.
-
 Step 1. Clone the repository locally:
 
 ```bash
