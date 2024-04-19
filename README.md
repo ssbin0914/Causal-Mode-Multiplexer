@@ -30,17 +30,24 @@ We propose a novel Causal Mode Multiplexer (CMM) framework that performs unbiase
 
 ## 🔧Installation & Data Preparation
 
+The following are the instructions on how to install dependencies and prepare data. 
+
 Step 1. Clone the repository locally:
 
 ```bash
 git clone https://github.com/ssbin0914/Causal-Mode-Multiplexer.git
+cd Causal-Mode-Multiplexer
 ```
 
-Step 2. Create conda env using the exported file `pytorch.yaml` and then activate it:
+Step 2. Create conda env using the file `requirements.txt` and then activate it:
 
 ```bash
-conda env create -f pytorch.yaml
-conda activate pytorch
+conda create -n cmm python=2.7.16
+conda activate cmm
+pip install -r requirements.txt
+wget https://download.pytorch.org/whl/cu90/torch-0.3.1-cp27-cp27mu-linux_x86_64.whl
+pip install torch-0.3.1-cp27-cp27mu-linux_x86_64.whl
+pip install torchvision==0.1.8
 ```
 
 Step 3. Download the `data` folder from [link](https://drive.google.com/drive/folders/1GM2hyK2rDq_GSSRRvAgFo4rVu-iVoBCa?usp=sharing). We provide the FLIR dataset.
