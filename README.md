@@ -52,7 +52,7 @@ cd lib
 sh make.sh
 ```
 
-Step 3. Download the `data` folder from [link](https://drive.google.com/file/d/1wgZtVGwJW-02XKSonyz_nKKwoNlu86vm/view?usp=sharing). We provide the FLIR dataset.
+Step 3. Download the `data` folder from [link](https://drive.google.com/file/d/1wgZtVGwJW-02XKSonyz_nKKwoNlu86vm/view?usp=sharing) and put it under the `Causal Mode Multiplexer` directory. We provide the FLIR dataset.
 
 ```
 └── Causal-Mode-Multiplexer
@@ -88,17 +88,6 @@ Step 3. Download the `data` folder from [link](https://drive.google.com/file/d/1
                │            └── ...
                │
                │
-               ├── Detection_Result
-               ├── export
-               ├── images
-               ├── images_ir
-               ├── output
-               │    └── res50
-               │            └── kaist_test
-               │                     └── faster_rcnn_10
-               ├── weights
-               │    └── res50
-               │            └── kaist
                └── ...
 ```
 
@@ -112,7 +101,9 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python trainval_net.py ResNet50_lr0.007_Uncer_KL --
 
 where `ResNet50_lr0.007_Uncer_KL` is the name of the folder where the weights will be stored. `--lr` specifies the learning rate, `--lr_decay_step` indicates the step at which the learning rate decays, and `--epochs` refers to the number of training epochs.
 
-After running the code, the weights are stored in `weights/res50/kaist/ResNet50_lr0.007_Uncer_KL`. 
+After running the code, the weights are stored in `weights/res50/kaist/ResNet50_lr0.007_Uncer_KL`.
+
+* Pretrained weights for the FLIR dataset are available from this [link](https://drive.google.com/file/d/1-zwQI536o65FEfzoaQFU7hLurW1z4bWt/view?usp=sharing).
 
 ## 🧪Test
 
