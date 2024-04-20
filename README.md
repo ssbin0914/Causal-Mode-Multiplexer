@@ -127,7 +127,7 @@ To calculate the AP score, we use MATLAB.<br>
 Step 1. Create a folder locally and then create a `test` folder inside it.<br>
 Step 2. Move the txt files from the `Detection_Result/` directory into the `test` folder.<br>
 Step 3. Download and unzip the ground truth annotation folder from this [link](https://drive.google.com/file/d/1mhzmFKpvzjK9P1UzYc1btaJgezWxEaFk/view?usp=sharing).<br>
-Step 4. Download the evaluator from this [link](https://drive.google.com/drive/folders/1XL_208QF2QEqOQ9isM_riZY9bGb-B--i?usp=sharing).<br>
+Step 4. Download and unzip the evaluator from this [link](https://drive.google.com/drive/folders/1XL_208QF2QEqOQ9isM_riZY9bGb-B--i?usp=sharing).<br>
 Step 5. Open `FLIRdevkit-matlab-wrapper/demo_test.m`. In this file, set `dtDir` to the path of the test folder and `gtDIR` to the path of the downloaded ground truth annotation folder.<br>
 Step 6. Open `bbGt.m` and set a breakpoint at line 761 in `bbGt.m`. Then run `demo_test.m`. When it hits the breakpoint, enter `trapz(xs, ys)`. This value is the AP score.
 
