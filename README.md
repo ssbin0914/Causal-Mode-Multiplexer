@@ -53,7 +53,7 @@ sh make.sh
 cd ..
 ```
 
-Step 3. Download the `data` folder from this [link](https://drive.google.com/file/d/1wgZtVGwJW-02XKSonyz_nKKwoNlu86vm/view?usp=sharing) and put it under the `Causal Mode Multiplexer/` directory. We provide the FLIR dataset.
+Step 3. Download the `data` folder from this [link](https://drive.google.com/file/d/1wgZtVGwJW-02XKSonyz_nKKwoNlu86vm/view?usp=sharing), unzip it, and place it under the `Causal Mode Multiplexer/` directory. We provide the FLIR dataset.
 
 ```
 └── Causal-Mode-Multiplexer
