@@ -57,9 +57,12 @@ Step 3. Download the `data` folder from this [link](https://drive.google.com/fil
 ```
 └── Causal-Mode-Multiplexer
                ├── cfgs
+               │
                ├── lib
+               │ 
                ├── data
                │    ├── cache
+               │    │ 
                │    ├── KAIST_PED
                │    │       └── Annotations
                │    │       │        ├── lwir
@@ -82,11 +85,11 @@ Step 3. Download the `data` folder from this [link](https://drive.google.com/fil
                │    │       │              ├── FLIR_08864.jpg
                │    │       │              └── ...
                │    │       └── results
+               │    │ 
                │    └── pretrained_model
                │            ├── resnet50.pth
                │            ├── resnet101.pth
                │            └── ...
-               │
                │
                └── ...
 ```
