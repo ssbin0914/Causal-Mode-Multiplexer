@@ -12,7 +12,7 @@
 
 <a href='https://arxiv.org/abs/2403.01300'><img src='https://img.shields.io/badge/Paper-Arxiv-red'></a>
 
-This repository contains code and links to the Causal Mode Multiplexer for unbiased multispectral pedestrian detection. We show that the Causal Mode Multiplexer framework effectively learns the causal relationships between multispectral inputs and predictions, thereby showing strong generalization ability on out-of-distribution data.
+This repository contains code and links for the Causal Mode Multiplexer, a framework designed for unbiased multispectral pedestrian detection. We show that the Causal Mode Multiplexer framework effectively learns the causal relationships between multispectral inputs and predictions, thereby showing strong generalization ability on out-of-distribution data.
 
 ## 🌏 Table of Contents
 
@@ -41,7 +41,7 @@ We propose a novel Causal Mode Multiplexer (CMM) framework that performs unbiase
 
 ## 🔧 Installation & Data Preparation
 
-The following are the instructions on how to install dependencies and prepare data. The code is tested on `torch=0.3.1, cuda9.0`.
+The following are the instructions on how to install dependencies and prepare data. The code is tested on `torch=0.3.1, cuda9.0, python=2.7.16`.
 
 Step 1. Clone the repository locally:
 
