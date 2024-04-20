@@ -50,6 +50,7 @@ pip install torch-0.3.1-cp27-cp27mu-linux_x86_64.whl
 pip install torchvision==0.1.8
 cd lib
 sh make.sh
+cd ..
 ```
 
 Step 3. Download the `data` folder from this [link](https://drive.google.com/file/d/1wgZtVGwJW-02XKSonyz_nKKwoNlu86vm/view?usp=sharing) and put it under the `Causal Mode Multiplexer/` directory. We provide the FLIR dataset.
