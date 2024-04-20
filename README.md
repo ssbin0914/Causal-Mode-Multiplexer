@@ -142,6 +142,7 @@ Step 1. Place the ground truth annotations in the `lwir` and `visible` folders w
 Step 2. Put the images from the ROTX-MP dataset into the `lwir` and `visible` folders located in the `data/KAIST_PED/JPEG_Images/` directory.<br>
 Step 3. Replace the `test.txt` file in the `data/KAIST_PED/ImageSets/Main/` directory with the ROTX-MP `test.txt` file. Note that the original `test.txt` file is from the FLIR dataset.<br>
 Step 4. Delete the files located in the `data/cache/` directory if you evaluate on the ROTX-MP dataset after evaluating the FLIR dataset. It is crucial to remove these files when switching between datasets for training and evaluation. This is also the case when you want to evaluate on the FLIR dataset after evaluating the ROTX-MP dataset.
+Step 5. To calculate the AP score, simply perform the evaluation in the same way it was previously done with the FLIR dataset.
 
 ## 📃Citation
 
