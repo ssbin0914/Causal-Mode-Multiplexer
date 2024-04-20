@@ -16,7 +16,7 @@ This repository contains code and links to the Causal Mode Multiplexer for unbia
 
 ## Table of Contents
 
-- [News](Acknowledgement)
+- [News](#new)
 - [Summary](Acknowledgement)
 - Installation & Data Preparation
 - Training
