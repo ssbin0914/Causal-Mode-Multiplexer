@@ -14,7 +14,7 @@
 
 This repository contains code and links to the Causal Mode Multiplexer for unbiased multispectral pedestrian detection. We show that the Causal Mode Multiplexer framework effectively learns the causal relationships between multispectral inputs and predictions, thereby showing strong generalization ability on out-of-distribution data.
 
-## 🌏Table of Contents
+## 🌏 Table of Contents
 
 - [News](#news)
 - [Summary](#summary)
@@ -25,13 +25,13 @@ This repository contains code and links to the Causal Mode Multiplexer for unbia
 - [Citation](#citation)
 - [Acknowledgement](#acknowledgement)
 
-## 📢News
+## 📢 News
 
-- **2024.04.17** 🌈Code released.
-- **2024.03.02** ⭐[**arXiv**](https://arxiv.org/abs/2403.01300) preprint released. 
-- **2024.02.27** 🎉Our paper has been accepted to CVPR 2024.
+- **2024.04.17** 🌈 Code released.
+- **2024.03.02** ⭐ [**arXiv**](https://arxiv.org/abs/2403.01300) preprint released. 
+- **2024.02.27** 🎉 Our paper has been accepted to CVPR 2024.
 
-## 📝Summary
+## 📝 Summary
 
 ![Fig4_1](https://github.com/ssbin0914/Causal-Mode-Multiplexer/assets/101541087/7b90c4a0-ed92-464b-9bfb-9febe8f2d337)
 
@@ -39,7 +39,7 @@ We propose a novel Causal Mode Multiplexer (CMM) framework that performs unbiase
 
 ##### <sup>1</sup>R⋆T⋆ refers to the visibility (O/X) in each modality. Generally, ROTO refers to daytime images, and RXTO refers to nighttime images. ROTX refers to daytime images in obscured situations.
 
-## 🔧Installation & Data Preparation
+## 🔧 Installation & Data Preparation
 
 The following are the instructions on how to install dependencies and prepare data. The code is tested on `torch=0.3.1, cuda9.0`.
 
@@ -106,7 +106,7 @@ Step 3. Download the `data` folder from this [link](https://drive.google.com/fil
                └── ...
 ```
 
-## 🔨Training
+## 🔨 Training
 
 To train the CMM, simply run:
 
@@ -120,7 +120,7 @@ After running the code, the weights are stored in `weights/res50/kaist/ResNet50_
 
 - The pretrained weight for the FLIR dataset are available from this [link](https://drive.google.com/file/d/1-zwQI536o65FEfzoaQFU7hLurW1z4bWt/view?usp=sharing). If you want to test with this pretrained weight, put the weight file under the `weights/res50/kaist/ResNet50_lr0.007_Uncer_KL/` directory.
 
-## 🧪Test
+## 🧪 Test
 
 To test the CMM, simply run:
 
@@ -142,7 +142,7 @@ Step 4. Download and unzip the evaluator from this [link](https://drive.google.c
 Step 5. Open `FLIRdevkit-matlab-wrapper/demo_test.m`. In this file, set `dtDir` to the path of the `test` folder and `gtDIR` to the path of the downloaded ground truth annotation `flir` folder.<br>
 Step 6. Open `FLIRdevkit-matlab-wrapper/bbGt.m` and set a breakpoint at line 761. Then run `demo_test.m`. When it hits the breakpoint, enter `trapz(xs, ys)`. This value is the AP score.
 
-## ✨New Dataset: ROTX-MP
+## ✨ New Dataset: ROTX-MP
 
 To evaluate modality bias in multispectral pedestrian detectors, we propose a new dataset: ROTX Multispectral Pedestrian (ROTX-MP) dataset. It mainly contains ROTX data, compared to existing datasets that consist of ROTO and RXTO data. ROTX-MP consists of 1000 ROTX test images collected from two practical scenarios (pedestrians over a glass window, pedestrians wearing heat-insulation clothes) related to the applications of multispectral pedestrian detection.
 
@@ -155,7 +155,7 @@ Step 3. Replace the `test.txt` file in the `data/KAIST_PED/ImageSets/Main/` dire
 Step 4. Delete the files located in the `data/cache/` directory if you evaluate on the ROTX-MP dataset after evaluating the FLIR dataset. It is crucial to remove these files when switching between datasets for training and evaluation. This is also the case when you want to evaluate on the FLIR dataset after evaluating the ROTX-MP dataset.<br>
 Step 5. To calculate the AP score, simply perform the evaluation in the same way it was previously done with the FLIR dataset.
 
-## 📃Citation
+## 📃 Citation
 
 If you find this work useful for your research, please consider citing our paper:
 
@@ -168,7 +168,7 @@ If you find this work useful for your research, please consider citing our paper
 }
 ```
 
-## 🙏Acknowledgement
+## 🙏 Acknowledgement
 
 We thank the authors of the following research works and open-source projects. We've used some of the code from different repositories.
 
