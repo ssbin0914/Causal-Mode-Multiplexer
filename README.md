@@ -41,7 +41,7 @@ We propose a novel Causal Mode Multiplexer (CMM) framework that performs unbiase
 
 ## 🔧 Installation & Data Preparation
 
-The following are the instructions on how to install dependencies and prepare data. The code is tested on `torch=0.3.1, cuda9.0, python=2.7.16`.
+The following are the instructions on how to install dependencies and prepare data. The code is tested on `torch=0.3.1, cuda9.0`.
 
 Step 1. Clone the repository locally:
 
