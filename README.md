@@ -21,7 +21,7 @@ This repository contains code and links to the Causal Mode Multiplexer for unbia
 - [Installation & Data Preparation](#installation-&-data-preparation)
 - [Training](#training)
 - [Test](#test)
-- [New Dataset: ROTX-MP](#new-dataset:-rotx-mp)
+- [New Dataset: ROTX-MP](#new-dataset:-ROTX-MP)
 - [Citation](#citation)
 - [Acknowledgement](#acknowledgement)
 
