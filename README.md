@@ -119,7 +119,9 @@ CUDA_VISIBLE_DEVICES=0 python test_net.py ResNet50_lr0.007_Uncer_KL --dataset ka
 
 where `ResNet50_lr0.007_Uncer_KL` is the name of the folder containing the weights you want to test. Set `--checksession`, `--checkepoch`, and `--checkpoint` according to the name of your weight file, e.g., `fpn_2_2_1381.pth`.
 
-After running the code, the detection results are stored in `Detection_Result/` directory. These results are used for evaluation purposes. Visualization results are also stored as RGB images in the `images` folder and as infrared (IR) images in the `images_ir` folder.
+After running the code, you may encounter the error `IOError: [Errno 2] No such file or directory: '~/data/KAIST_PED/Annotations/FLIR_09593.xml`. Even if this error occurs, it still indicates that the detection was performed correctly. We calculate the AP score not with `test_net.py` but using MATLAB, so proceed to the next step.
+
+The detection results are stored in `Detection_Result/` directory. These results are used for evaluation purposes. Visualization results are also stored as RGB images in the `images` folder and as infrared (IR) images in the `images_ir` folder.
 
 To calculate the AP score, we use MATLAB.<br>
 Step 1. Create a folder locally and then create a `test` folder inside it.<br>
