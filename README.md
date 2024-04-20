@@ -12,7 +12,7 @@
 
 <a href='https://arxiv.org/abs/2403.01300'><img src='https://img.shields.io/badge/Paper-Arxiv-red'></a>
 
-This repository contains code and links for the Causal Mode Multiplexer, a framework designed for unbiased multispectral pedestrian detection. We show that the Causal Mode Multiplexer framework effectively learns the causal relationships between multispectral inputs and predictions, thereby showing strong generalization ability on out-of-distribution data.
+This repository contains code and links to the Causal Mode Multiplexer, a framework designed for unbiased multispectral pedestrian detection. We show that the Causal Mode Multiplexer framework effectively learns the causal relationships between multispectral inputs and predictions, thereby showing strong generalization ability on out-of-distribution data.
 
 ## 🌏 Table of Contents
 
