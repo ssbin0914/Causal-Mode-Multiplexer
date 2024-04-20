@@ -104,7 +104,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python trainval_net.py ResNet50_lr0.007_Uncer_KL --
 
 where `ResNet50_lr0.007_Uncer_KL` is the name of the folder where the weights will be stored. `--lr` specifies the learning rate, `--lr_decay_step` indicates the step at which the learning rate decays, and `--epochs` refers to the number of training epochs.
 
-After running the code, the weights are stored in `weights/res50/kaist/ResNet50_lr0.007_Uncer_KL/`.
+After running the code, the weights are stored in `weights/res50/kaist/ResNet50_lr0.007_Uncer_KL/` directory.
 
 * The pretrained weight for the FLIR dataset are available from this [link](https://drive.google.com/file/d/1-zwQI536o65FEfzoaQFU7hLurW1z4bWt/view?usp=sharing). If you want to test with this pretrained weight, put the weight file under the `weights/res50/kaist/ResNet50_lr0.007_Uncer_KL/` directory.
 
