@@ -16,14 +16,14 @@ This repository contains code and links to the Causal Mode Multiplexer, a framew
 
 ## 🌏 Table of Contents
 
-- [News](#news)
-- [Summary](#summary)
-- [Installation & Data Preparation](#installation--data-preparation)
-- [Training](#training)
-- [Test](#test)
-- [New Dataset: ROTX-MP](#new-dataset-rotx-mp)
-- [Citation](#citation)
-- [Acknowledgement](#acknowledgement)
+- [News](#-news)
+- [Summary](#-summary)
+- [Installation & Data Preparation](#-installation--data-preparation)
+- [Training](#-training)
+- [Test](#-test)
+- [New Dataset: ROTX-MP](#-new-dataset-rotx-mp)
+- [Citation](#-citation)
+- [Acknowledgement](#-acknowledgement)
 
 ## 📢 News
 
