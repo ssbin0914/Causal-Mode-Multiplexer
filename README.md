@@ -160,10 +160,11 @@ Step 5. To calculate the AP score, simply perform the evaluation in the same way
 If you find this work useful for your research, please consider citing our paper:
 
 ```bibtex
-@article{kim2024causal,
+@inproceedings{kim2024causal,
   title={Causal Mode Multiplexer: A Novel Framework for Unbiased Multispectral Pedestrian Detection},
   author={Kim, Taeheon and Shin, Sebin and Yu, Youngjoon and Kim, Hak Gu and Ro, Yong Man},
-  journal={arXiv preprint arXiv:2403.01300},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={26784--26793},
   year={2024}
 }
 ```
